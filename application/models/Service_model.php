@@ -67,6 +67,7 @@ class Service_model extends CI_Model
 
     public function delete($id)
     {
+        $this->_deleteImage($id);
         return $this->db->delete($this->_table, array("service_id" => $id));
     }
 
@@ -87,5 +88,14 @@ class Service_model extends CI_Model
         }
         
         return "default.jpg";
+    }
+
+    private function _deleteImage($id)
+    {
+        $service = $this->getById($id);
+        if ($service->image != "default.jpg") {
+            $filename = explode(".", $service->image)[0];
+            return array_map('unlink', glob(FCPATH."upload/service/$filename.*"));
+        }
     }
 }
